@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">NewsApp</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Headlines</string>
+    <string name="title_trending">Trending</string>
+    <string name="title_bookmark">Bookmark</string>
+    <string name="fetching_news">Fetching News</string>
+    <string name="politics">Politics</string>
+    <string name="sports">SPORTS</string>
+    <string name="world">WORLD</string>
+    <string name="business">BUSINESS</string>
+    <string name="politics1">POLITICS</string>
+    <string name="technology">TECHNOLOGY</string>
+    <string name="science">SCIENCE</string>
+    <string name="los_angeles">Los Angeles</string>
+    <string name="no_bookmarked_articles">No Bookmarked Articles</string>
+    <string name="no_results">Unable to fetch any news</string>
+
+</resources>

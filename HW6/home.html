@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="/static/CSS_files/stylesheet.css">
+	<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Load d3-cloud -->
+<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
+	<title>Sanjana Test</title>
+</head>
+<body>
+
+<div class="body">
+	<div class="search">
+		<button id="search1" class="search1 search1color" onclick="toggle(this)">Google News</button>
+		<button id="search2" class="search1" onclick="toggle(this)">Search</button>
+	</div>
+	<div class="center" id="center">
+			<div class="lastestupdate">
+				<div id="slideshow1" class="slideshow1"></div>
+				<div id="cloud" style="height: 230px;background-color: #f3f3f3;margin-left: 15px;width: 260px;"></div>
+			</div>
+
+			<div>
+				<div style="align-content: center;">
+					<b><h3 class="CNNcenter" style="margin-bottom: 4px;text-align: center;"> CNN</h3></b>
+					<hr style="border-top: 1px dotted #555555;border-bottom: 1px solid #555555;margin: 0px;">
+				</div>
+				<div id="CNN" class="CNN" >
+				</div>
+			</div>
+			<div>
+				<div style="align-content: center;">
+					<b><h3 class="CNNcenter" style="margin-bottom: 4px; text-align: center"> Fox News</h3></b>
+					<hr style="border-top: 1px dotted #555555;border-bottom: 1px solid #555555;margin: 0px;">
+				</div>
+				<div id="fox" class="CNN" >
+				</div>
+			</div>
+	</div>
+	<div class = "form1" id="form1">
+		<div class="formkeywords">
+			<form id="search_form">
+				<label style="padding: 0px" class="blacktext">Keyword</label><span class="required" >*</span>
+				<input style="border:0px solid;height: 21px;width: 125px;" type="text" name="keyword" required>
+				<label class="blacktext">From</label><span class="required" >*</span>
+				<input style="border:0px solid;height: 21px;width: 125px;" type="date" id="datefrom"  name="datefrom" onload="getoldDate();" required>
+
+				<label class="blacktext">To</label><span class="required" >*</span>
+				<input style="border:0px solid;height: 21px;width: 125px;" type="date" id = "date" name="dateTo" onload="getDate();" required>
+				<br><br>
+				<label class="blacktext">Category</label>
+				<select style="width: 120px;" id="category" name="category" onchange="display_category();">
+					<option value="all" selected>All</option>
+					<option value="business">Business</option>
+					<option value="entertainment">Entertainment</option>
+					<option value="general">General</option>
+					<option value="health">Health</option>
+					<option value="science">Science</option>
+					<option value="sports">Sports</option>
+					<option value="technology">Technology</option>
+			  	</select>
+				<label class="blacktext" style="padding-left: 14px;">Source</label>
+				<select id="source" name="source" style="width: 120px;">
+
+			  	</select>
+				<br><br>
+				  <input type="button" value="Search" class="searchstyle" onclick="searchnews();">
+				<input type="button" name="Clear" value="Clear" class="searchstyle" onclick="clear_function();">
+
+			</form>
+			</div>
+		<div id="results">
+
+		</div>
+		<input type="button" id="more" value="Show More" style="display: none;" onclick="display_more();">
+		<input type="button" id="less" value="Show Less" style="display: none;" onclick="display_less();">
+
+	</div>
+
+</div>
+
+<script>
+	var xhttp = new XMLHttpRequest();
+	var json_value;
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			json_value = xhttp.responseText;
+			json_value = JSON.parse(json_value);
+			display_slideshow(json_value)
+			word_cloud(json_value.word_clouds)
+		}
+	};
+	xhttp.open("GET", "/slideshows", true);
+	xhttp.send();
+
+	var xhttp1 = new XMLHttpRequest();
+	var json_value1;
+	xhttp1.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			json_value1 = xhttp1.responseText;
+			json_value1 = JSON.parse(json_value1);
+			display_CNNewns(json_value1)
+		}
+	};
+	xhttp1.open("GET", "/CNNnews", true);
+	xhttp1.send();
+
+	var xhttp2 = new XMLHttpRequest();
+	var json_value2;
+	xhttp2.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			json_value2 = xhttp2.responseText;
+			json_value2 = JSON.parse(json_value2);
+			display_foxnewns(json_value2)
+		}
+	};
+	xhttp2.open("GET", "/Foxnews", true);
+	xhttp2.send();
+
+
+			var myIndex = 0;
+
+		function slides() {
+		  var x = document.getElementsByClassName("alink");
+		  for (var i = 0; i < x.length; i++) {
+			x[i].style.display = "none";
+		  }
+		  myIndex++;
+		  if (myIndex > x.length) {myIndex = 1}
+		  x[myIndex-1].style.display = "block";
+		  setTimeout(slides, 2500); // Change image every 2 seconds
+		}
+
+		function display_slideshow(v) {
+			var count = v.totalResults;
+			if(count > 5)
+				count = 5;
+
+			for(i=0;i<count;i++){
+				var atag = document.createElement("a");
+				var divtag1 = document.createElement("div");
+				var divtag2 = document.createElement("div");
+				var imgtag = document.createElement("img");
+				var h2tag = document.createElement("h2");
+				var ptag = document.createElement("p");
+				h2tag.style= "margin:5px 5px 2px 5px; ";
+				h2tag.innerHTML = v.articles[i].title;
+				ptag.style="margin: 6px 4px 12px 4px;";
+				ptag.innerHTML = v.articles[i].description;
+				divtag2.classList.add("headeropaque");
+				divtag2.appendChild(h2tag);
+				divtag2.appendChild(ptag);
+				imgtag.classList.add("mySlides");
+				imgtag.src = v.articles[i].urlToImage;
+				divtag1.classList.add("firstimg");
+				divtag1.appendChild(imgtag);
+				divtag1.appendChild(divtag2);
+				atag.classList.add("alink");
+				atag.href = v.articles[i].url;
+				atag.target = "_blank";
+				atag.appendChild(divtag1);
+				document.getElementById("slideshow1").appendChild(atag);
+			}
+			slides();
+		}
+
+		function display_CNNewns(cnn){
+			var cnt = cnn.totalResults;
+			if(cnt>4)
+				cnt = 4;
+			for(i=0;i<cnt;i++){
+				var atag = document.createElement("a");
+				var ptag = document.createElement("p");
+				var h4tag = document.createElement("h4");
+				var imgtag = document.createElement("img");
+				var divtag1 = document.createElement("div");
+				var divtag2 = document.createElement("div");
+				h4tag.style="margin: 0px;";
+				imgtag.classList.add("CNNfirstimg");
+				atag.classList.add("eachdivCNN");
+				imgtag.src = cnn.articles[i].urlToImage;
+				h4tag.innerHTML = cnn.articles[i].title;
+				ptag.innerHTML=cnn.articles[i].description;
+				h4tag.style="padding: 0 3px 0 3px;";
+				ptag.style="padding: 0 3px 0 3px;";
+				divtag1.appendChild(imgtag);
+				divtag1.appendChild(h4tag);
+				divtag1.appendChild(ptag);
+				atag.href = cnn.articles[i].url;
+				atag.target = "_blank";
+				atag.style = "color:black;text-decoration:none;";
+				atag.appendChild(divtag1);
+				document.getElementById("CNN").appendChild(atag);
+			}
+	}
+
+	function display_foxnewns(fox){
+			var cnt = fox.totalResults;
+			if(cnt>4)
+				cnt = 4;
+			for(i=0;i<cnt;i++){
+				var atag = document.createElement("a");
+				var ptag = document.createElement("p");
+				var h4tag = document.createElement("h4");
+				var imgtag = document.createElement("img");
+				var divtag1 = document.createElement("div");
+				var divtag2 = document.createElement("div");
+				h4tag.style="margin: 0px;";
+				imgtag.classList.add("CNNfirstimg");
+				atag.classList.add("eachdivCNN");
+				imgtag.src = fox.articles[i].urlToImage;
+				h4tag.innerHTML = fox.articles[i].title;
+				ptag.innerHTML=fox.articles[i].description;
+				h4tag.style="padding: 0 3px 0 3px;";
+				ptag.style="padding: 0 3px 0 3px;";
+				divtag1.appendChild(imgtag);
+				divtag1.appendChild(h4tag);
+				divtag1.appendChild(ptag);
+				atag.href = fox.articles[i].url;
+				atag.target = "_blank";
+				atag.style = "color:black;text-decoration:none;";
+				atag.appendChild(divtag1);
+				document.getElementById("fox").appendChild(atag);
+			}
+	}
+	function display_category() {
+		var xhttp3 = new XMLHttpRequest();
+		var json_value3;
+		xhttp3.onreadystatechange = function () {
+			if (this.readyState == 4 && this.status == 200) {
+				json_value3 = xhttp3.responseText;
+				category = JSON.parse(json_value3);
+				var cnt = category.sources.length;
+				var x = document.getElementById("source");
+				x.innerHTML = "<option value='all'>All</option>";
+				for (i = 0; i < cnt; i++) {
+					var option1 = document.createElement("option");
+					option1.value = category.sources[i].id;
+					option1.innerHTML = category.sources[i].name;
+					x.append(option1);
+				}
+
+
+			}
+
+
+		}
+		var cat = document.getElementById("category").value;
+				xhttp3.open("GET", "/category?cat=" + cat, true);
+				xhttp3.send();
+
+	}
+
+		function toggle(a) {
+			if (a.id == "search2") {
+				document.getElementById("form1").style = "display:block";
+				document.getElementById("center").style = "display:none";
+				document.getElementById("search1").classList.remove("search1color");
+				document.getElementById("search2").classList.add("search1color");
+			} else {
+				document.getElementById("form1").style = "display:none";
+				document.getElementById("center").style = "display:block";
+				document.getElementById("search2").classList.remove("search1color");
+				document.getElementById("search1").classList.add("search1color");
+			}
+		}
+
+		function getDate() {
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth() + 1; //January is 0!
+			var yy = today.getUTCFullYear();
+
+			if (dd < 10) {
+				dd = '0' + dd
+			}
+
+			if (mm < 10) {
+				mm = '0' + mm
+			}
+
+			today = yy + '-' + mm + '-' + dd;
+			datefrom = getoldDate();
+			var difference = new Date(today-datefrom);
+			console.log("Difference:"+difference);
+			console.log(today);
+			document.getElementById("date").value = today;
+		}
+
+		function getoldDate() {
+			var date1 = new Date();
+
+			var daysPrior = 7;
+			date1.setDate(date1.getDate() - daysPrior);
+
+			var dd = date1.getDate();
+			var mm = date1.getMonth() + 1; //January is 0!
+			var yy = date1.getUTCFullYear();
+			if (dd < 10) {
+				dd = '0' + dd
+			}
+
+			if (mm < 10) {
+				mm = '0' + mm
+			}
+			date1 = yy + '-' + mm + '-' + dd;
+			console.log(date1);
+			document.getElementById("datefrom").value = date1;
+		}
+
+		function clear_function() {
+			document.getElementById("search_form").reset();
+			getDate();
+			getoldDate();
+			display_category();
+			document.getElementById("results").innerHTML = "";
+			document.getElementById("less").style = "display:none;";
+			document.getElementById("more").style = "display:none;";
+		}
+
+		function searchnews() {
+			var d = document.getElementById('search_form');
+			if (d.checkValidity() == false) {
+				d.reportValidity();
+				return;
+			}
+			var keyword = d.keyword.value;
+			var datefrom = d.datefrom.value;
+			var dateto = d.dateTo.value;
+			var source = d.source.value;
+			console.log(keyword + " " + datefrom + " " + dateto + " " + source);
+			if(datefrom>dateto)
+			{
+				alert("Incorrect time");
+				return;
+			}
+
+			var xhttp4 = new XMLHttpRequest();
+			var json_value4;
+			xhttp4.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					json_value4 = xhttp4.responseText;
+					json_value4 = JSON.parse(json_value4);
+					advancedsearch(json_value4);
+				}
+			};
+			xhttp4.open("GET", "/advancedsearch?keyword=" + keyword + "&datefrom=" + datefrom + "&dateto=" + dateto + "&source=" + source, true);
+			xhttp4.send();
+
+		}
+
+		function advancedsearch(a1) {
+
+			if(a1.status=='error')
+			{
+				alert(a1.message);
+				return;
+			}
+			document.getElementById("results").style="text-align:left;"
+			var cnt = a1.totalResults;
+			if(cnt>5){
+				document.getElementById("more").style = "display:block";
+				document.getElementById("less").style="display:none;";
+			}else{
+				document.getElementById("more").style="display:none;";
+				document.getElementById("less").style="display:none;";
+			}
+			document.getElementById("results").innerHTML = "";
+
+			if(cnt>=15)
+				cnt = 15;
+			else if(cnt==0){
+				document.getElementById("results").innerHTML = "No results";
+				document.getElementById("results").style = "text-align:center";
+				document.getElementById("less").style = "display:none;";
+				document.getElementById("more").style = "display:none;";
+			}
+
+
+
+			for (i = 0; i < cnt; i++) {
+				var h4tag = document.createElement("h4");
+				var ptag = document.createElement("p");
+				var divtag1 = document.createElement("div");
+				ptag.style = "margin: 5px 20px 0px 0px;font-size: 13px;";
+				h4tag.style = "margin: 10px 20px 0px 0px; font-size: 14px;";
+				h4tag.innerHTML = a1.articles[i].title;
+				if(a1.articles[i].description.length<=52)
+					ptag.innerHTML = a1.articles[i].description.replace(/^([\s\S]{52}[^\s]*)[\s\S]*/, "$1");
+				else
+					ptag.innerHTML = a1.articles[i].description.replace(/^([\s\S]{52}[^\s]*)[\s\S]*/, "$1")+"...";
+				divtag1.classList.add("expandsearch");
+				divtag1.setAttribute('name', "expandsearch");
+				divtag1.appendChild(h4tag);
+				divtag1.appendChild(ptag);
+				divtag1.setAttribute("onclick", "expandsearch(this)");
+				var imgtag = document.createElement("img");
+				imgtag.classList.add('searchimg');
+				imgtag.src = a1.articles[i].urlToImage;
+
+				var divtagmain = document.createElement("div");
+				divtagmain.classList.add("searchresults");
+				divtagmain.style = "position: relative";
+				divtagmain.appendChild(imgtag);
+				divtagmain.appendChild(divtag1);
+				var divtaghidden = document.createElement("div");
+				divtaghidden.classList.add("searchhidden");
+				divtaghidden.id = "searchhidden";
+				divtaghidden.style="display:none;";
+				var h4taghidden = document.createElement("h4");
+				h4taghidden.style = "margin: 10px 20px 0px 0px;font-size: 14px;";
+				h4taghidden.innerText = a1.articles[i].title;
+				var imgtagcross = document.createElement("img");
+				imgtagcross.setAttribute("name", "cross_image");
+				imgtagcross.src = "static/black-cross.png";
+				imgtagcross.style = "width: 15px;height: 15px;position:absolute;top:10px;right: 10px;";
+				imgtagcross.setAttribute("onclick", "event.stopPropagation(); expandsearch(this);");
+				imgtagcross.classList.add("cross_class");
+				var ptag1 = document.createElement("p");
+				var ptag2 = document.createElement("p");
+				var ptag3 = document.createElement("p");
+				ptag1.innerHTML = "<b>Author: </b>" + a1.articles[i].author;
+				ptag2.innerHTML = "<b>Source: </b>" + a1.articles[i].source.name;
+			 	var date1 = new Date( a1.articles[i].publishedAt);
+				var dd = date1.getDate();
+				var mm = date1.getMonth() + 1; //January is 0!
+				var yy = date1.getUTCFullYear();
+				if (dd < 10) {
+					dd = '0' + dd
+				}
+
+				if (mm < 10) {
+					mm = '0' + mm
+				}
+				date1 = mm + '/' + dd + '/' + yy;
+				ptag3.innerHTML = "<b>Date: </b>" +date1;
+				ptag1.style="margin-top:4px";
+				ptag2.style="margin-top:4px";
+				ptag3.style="margin-top:4px";
+				var ptaglast = document.createElement("p");
+				//ptaglast.style="margin-top:4px";
+				ptaglast.style = "margin: 4px 20px 5px 0px;";
+				ptaglast.innerHTML = a1.articles[i].description;
+				var ataghidden = document.createElement("a");
+				ataghidden.href = a1.articles[i].url;
+				ataghidden.innerHTML = "See Original Post";
+				ataghidden.target = "_blank";
+				divtaghidden.appendChild(h4taghidden);
+				divtaghidden.appendChild(imgtagcross);
+				divtaghidden.appendChild(ptag1);
+				divtaghidden.appendChild(ptag2);
+				divtaghidden.appendChild(ptag3);
+				divtaghidden.appendChild(ptaglast);
+				divtaghidden.appendChild(ataghidden);
+				divtagmain.appendChild(divtaghidden);
+				divtagmain.setAttribute("onclick", "expandsearch(this.childNodes[1])");
+				if(i>=5){
+					divtagmain.classList.add("hidden_result");
+				}
+				document.getElementById("results").appendChild(divtagmain);
+
+			}
+
+		}
+			function display_less(){
+			document.getElementById("less").style = "display:none;";
+			document.getElementById("more").style = "display:block;";
+
+			var all_hidden = document.getElementsByClassName("shown_result");
+			var cnt = all_hidden.length;
+			var remover = 0;
+			for(i=0;i<cnt;i++){
+				all_hidden[remover].classList.add("hidden_result");
+				all_hidden[remover].classList.remove("shown_result");
+			}
+
+		}
+		function word_cloud(wordcloud) {
+// List of words
+			words=[]
+			var multiplier = wordcloud[0][1];
+			var size1 = 55;
+			for(word1 in wordcloud)
+			{
+				if(wordcloud[word1][1] == multiplier)
+					words.push({word:wordcloud[word1][0], size: size1});
+				else{
+					size1 = size1 / 1.4;
+					multiplier = wordcloud[word1][1];
+					words.push({word:wordcloud[word1][0], size: size1});
+				}
+			}
+			console.log(words);
+		var myWords = words;
+
+		// set the dimensions and margins of the graph
+		var margin = {top: 0, right: 0, bottom: 0, left: 0},
+			width = 260 - margin.left - margin.right,
+			height = 230 - margin.top - margin.bottom;
+
+		// append the svg object to the body of the page
+		var svg = d3.select("#cloud").append("svg")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+			.attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+// Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
+// Wordcloud features that are different from one word to the other must be here
+var layout = d3.layout.cloud()
+  .size([width, height])
+  .words(myWords.map(function(d) { return {text: d.word, size:d.size}; }))
+  .padding(5)        //space between words
+  .rotate(function() { return ~~(Math.random() * 2) * 90; })
+  .fontSize(function(d) { return d.size; })      // font size of words
+  .on("end", draw);
+layout.start();
+
+// This function takes the output of 'layout' above and draw the words
+// Wordcloud features that are THE SAME from one word to the other can be here
+function draw(words) {
+  svg
+    .append("g")
+      .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+      .selectAll("text")
+        .data(words)
+      .enter().append("text")
+        .style("font-size", function(d) { return d.size + "px"; })
+        .style("fill", "black")
+        .attr("text-anchor", "middle")
+        .style("font-family", "Impact")
+        .attr("transform", function(d) {
+          return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+        })
+        .text(function(d) { return d.text; });
+}
+		}
+
+		function expandsearch(a1) {
+			if (a1.className == "expandsearch") {
+				a1.nextSibling.style = "display:block";
+				a1.style = "display:none";
+				a1.parentElement.style = "position:relative; cursor:default;";
+			} else {
+
+				a1.parentElement.previousSibling.style = "display:block";
+				a1.parentElement.style = "display:none";
+				a1.parentElement.parentElement.style = "position:relative;";
+			}
+		}
+
+		function display_more(){
+			document.getElementById("less").style = "display:block;";
+			document.getElementById("more").style = "display:none;";
+			var remover = 0;
+			var all_hidden = document.getElementsByClassName("hidden_result");
+			var cnt = all_hidden.length;
+			for(i=0;i<cnt;i++){
+				all_hidden[remover].classList.add("shown_result");
+				all_hidden[remover].classList.remove("hidden_result");
+			}
+
+
+		}
+
+
+		window.onload = function () {
+			getDate();
+			getoldDate();
+			display_category();
+		};
+
+</script>
+</body>
+</html>

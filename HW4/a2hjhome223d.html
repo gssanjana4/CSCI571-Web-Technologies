@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HW4</title>
+ <script type = "text/javascript">
+            function sayHello(file) {
+              
+               function loadJSON(url) {
+                try{
+                  xmlhttp = new XMLHttpRequest();
+                  xmlhttp.open("GET",url,false); // "synchronous” (deprecated because it freezes the page while waiting for a response) *
+                  xmlhttp.send();
+                    }catch(e){} 
+                  if(xmlhttp.status==200){                    
+                       var jsonObj= xmlhttp.responseText;
+                       return jsonObj;
+                  }
+                  else{
+                    alert("The File does not exist.");
+                    return false;
+                  }               
+                
+              }
+
+              if(file=="")
+                {
+                  alert("The File name cannot be empty.");
+                  return;
+                }
+
+              jsonObj = loadJSON(file);
+              if(jsonObj == false)
+                return;
+              jsonObj = JSON.parse(jsonObj);
+              jsonObj = generateHTML(jsonObj);
+              if(jsonObj == false)
+                return;
+              hWin = window.open("", "Assignment4", "height=800,width=1300");
+              hWin.document.write(html_text); 
+
+            function generateHTML(root1) {
+                try{
+                        suf = root1.Mainline.Table;
+                        if(!suf.hasOwnProperty("Row")|| suf.Row.length==0)
+                        {
+                          alert("The JSON file does not contain any buildings.");
+                          return false;
+                        }
+                        html_text = "<html><head><title>Tall buldings</title></head><body><table style=\"width 100%;\"><tr>";
+                        for(x in suf.Header.Data){
+                          html_text+= "<th>"+ suf.Header.Data[x]+ "</th>";
+                        }
+                        html_text+= "</tr>";                        
+                        for(r in suf.Row){
+                            html_text+= "</tr><td>"+suf.Row[r].Rank+"</td><td>"+suf.Row[r].Name+"</td><td><ul>";
+                            for(i = 0 ;i<suf.Row[r].Hubs.Hub.length;i++)
+                            {
+                              if(i<=0){
+                                html_text+="<li style=\"font-weight: bold;\">"+suf.Row[r].Hubs.Hub[i]+"</li>";
+                              }
+                              else
+                                 html_text+="<li>"+suf.Row[r].Hubs.Hub[i]+"</li>";
+                            }
+                            html_text+="</ul></td><td>"+suf.Row[r].Height+"</td><td><a href=\""+ suf.Row[r].HomePage+"\">"+suf.Row[r].HomePage+"</a></td>";
+                            if(suf.Row[r].Logo==""){
+                              html_text+="<td><div style=\"width: 180px; height: 180px;\"></td>";
+                            }
+                            else{
+                              html_text+="<td><img src=\""+suf.Row[r].Logo+ "\"style=\"display: block;width: 180px;height: 180px;\"></td>";
+                            }
+                            html_text+="</tr>";
+                        }
+                        html_text+="</table><style>table{border-spacing: 2px;} table, td, th{border: 1px solid black;}</style></bo"+"dy></html>"; 
+                     }catch(e){
+                           alert("Error.");
+                      }
+              }
+}
+
+    </script> 
+</head>
+<body>
+<div class="box">
+	<div class="header" style="text-align: center">
+		<h1 style="font-size: 18px;margin-top: 160px;">Enter URL for list of tallest buildings JSON File</h1>
+    <form name="myform" id="location">
+		<input type="text" name="fname" id="text" required />
+		<br>
+    <br>
+		<input type="button" onclick="sayHello(this.form.fname.value)" name="Submit" value="Submit Query"/>
+  </form>
+	</div>
+</div>
+</body>
+</html>
+

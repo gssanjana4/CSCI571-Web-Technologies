@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:scaleType="center"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/itemImage"/>
+<!--        android:src="@drawable/christmas"-->
+        />
+    <TextView
+        android:id="@+id/itemText"
+        android:layout_width="match_parent"
+        android:textStyle="bold"
+        android:layout_height="80dp"
+        android:fontWeight="400"
+        android:textSize="18dp"
+        android:text="New text kfsjdflkjsdlkfjlsdlfjsd"
+        android:textAppearance="?attr/textAppearanceListItem" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#FF0000FF" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:id="@+id/twitter"
+            android:src="@drawable/bluetwitter"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="#FF0000FF" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/bookmarkdialog"
+            android:src="@drawable/ic_turned_in_not_24px"
+            android:onClick="bookmark" />
+
+
+    </LinearLayout>
+</LinearLayout>

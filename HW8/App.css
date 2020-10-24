@@ -1,0 +1,320 @@
+.displaycheck{
+  display: inherit;
+  text-decoration: none;
+  color: white;
+  background: linear-gradient(to left, rgba(52, 109, 212, 1),transparent);
+  background-color: #040d3c;
+}
+
+.flexdis{
+  display: inherit;
+}
+
+.headerClass{
+  width:18%;
+  color:black;
+  z-index:2;
+}
+
+.imgStyle{
+  height: 13em;
+  padding: .2em;
+  border:.06em solid #cacaca;
+  border-radius: .3em;
+  object-fit: cover;
+}
+.imgDivStyle{
+  width:25%;
+  padding:1em
+}
+
+.cardStyle{
+  margin-top: 1em;
+  margin-bottom: 2.3em;
+  margin-left: 1em;
+  margin-right: 1em;
+  border: .06em solid #cacaca;
+  box-shadow: 5px 6px 15px #b8b5b5;
+  border-radius: .3em;
+  cursor: pointer;
+  color: black;
+}
+.card-body{
+  flex: 1 1 auto;
+  min-height: 1em;
+  margin: 1em;
+  padding: 0em;
+}
+.bodyStyle{
+  width:75%;
+  padding: 1em;
+  margin: 0;
+}
+.toaster{
+  color: black;
+  font-size: .99em;
+  font-weight: 500;
+}
+.Toastify__close-button{
+  font-size: 0.65em;
+  color: black;
+  opacity: 1;
+}
+
+.socialchecks{
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.socials{
+  text-align:center;
+}
+
+
+.card-title {
+
+  padding-bottom: .4em;
+  margin: 0em;
+  font-style: italic;
+}
+
+.socialchecksdetails{
+    display: flex;
+    float: right;
+}
+
+.cardStyledetails{
+  display: block;
+  border: 0em;
+}
+
+
+.boxshStyle{
+  border:0.06em solid #cacaca;
+  box-shadow: 5px 5px 15px #b8b5b5;
+  margin: 1em;
+  padding: 1em;
+
+}
+.bookmarkc,.bookmarkc:hover{
+  padding-left: 0px;
+  text-decoration: none;
+  color: white;
+}
+
+.resultRow,.resultRow:hover{
+  color:black;
+  text-decoration:none;
+  padding:8px 12px;
+  cursor: default;
+}
+
+.result__option{
+padding: 0 !important;
+}
+
+.card{
+  flex-direction: row;
+}
+
+.network__share {
+  margin-left: auto;
+  align-items: center;
+}
+
+.badgeStyles{
+  background-color: #7f858b;
+}
+
+#toolTipForBookmark{
+  padding: 0.25rem 0.5rem;
+  margin-top: 0px;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5;
+    text-shadow: none;
+    text-transform: none;
+    letter-spacing: normal;
+    word-break: normal;
+    word-spacing: normal;
+    white-space: normal;
+    line-break: auto;
+    font-size: .875rem;
+    opacity: 1;
+}
+
+.displayinherit{
+  text-align:right;
+  color: white;
+  padding-left:0.5em;
+  padding-top: 0.5em;
+}
+.world {
+  background-color:#7c4eff;
+}
+.politics{
+  background-color:rgb(65,148,148);
+}
+
+.technology{
+  background-color:#cedc39;
+  color:black;
+}
+
+.business{
+  background-color: #4696ec;
+}
+
+.sport{
+  background-color:#f6c244;
+  color: black;
+}
+
+.sports{
+  background-color:#f6c244;
+  color: black;
+}
+
+.badgeisnytimes{
+  background-color: #14284a;
+}
+
+.NYTIMES{
+  background-color: #dbdbdb;
+  color:black;
+}
+.card-title a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+}
+.favGrid{
+display: grid;
+grid-template-columns: repeat(4,1fr);
+}
+
+.loader{
+  align-content: center; 
+}
+.c1nyt{
+  margin-right:1em;
+  margin-bottom:0;
+  font-size:1.1em;
+}
+.c1g{
+  margin-bottom:0;
+  margin-left:1em;
+  font-size:1.1em;
+}
+.titledetails{
+  margin: 10px;
+  font-weight:500;
+  font-size:2em;
+}
+
+.titlecard{
+  font-size:1.3em;
+  line-height:1.1;
+}
+
+.bookmarkdetails{
+  margin-left: 3.5em;
+  color:red;
+  margin-right: .6em;
+}
+
+.datedetails{
+  margin: .5em;
+  font-style:italic;
+  float:left;
+  font-size: .657em;
+  font-weight:400;
+}
+@media screen and (max-width:980px){
+  .headerClass{
+    width: 90%;
+  }
+  .cardStyle{
+    flex-direction: column;
+  }
+  .imgDivStyle{
+    width: 100%;
+    padding-bottom: 0;
+  }
+  .bodyStyle{
+    width: 100%;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 1em;
+    padding-top: 0;
+  }
+  .favGrid{
+    grid-template-columns: repeat(1,1fr);
+    }
+    .displayinherit{
+      text-align: left;
+      display: inherit;
+      padding-left: 0em;
+
+    }
+    .icon_bookmark{
+      padding-left: 0;
+    }
+    .c1nyt{
+      margin-bottom:0.5em;
+    }
+    .c1g{
+      margin-bottom:0.7em;
+      margin-left:0;
+    }
+
+    .tooltip{
+      display: none;
+    }
+
+    .titledetails{
+      margin: 10px;
+      font-weight:500;
+      font-size:1.8em;
+    }
+
+    .titlecard{
+      font-size:1.2em;
+      line-height:1.1;
+    }
+
+    .socialchecksdetails{
+      display: flex;
+  }
+ 
+ .bookmarkdetails{
+   margin-left: 1.2em;
+   color:red;
+   margin-right:.2em
+ }
+ .datedetails{
+  margin-right: .5em;
+  margin-left:0;
+  font-style:italic;
+  float:left;
+  font-size: .6em;
+  font-weight:500;
+}
+}
+
+@media screen and (max-width:650px){
+  .headerClass{
+    width: 82%;
+  }
+}
+@media screen and (max-width:320px){
+  .headerClass{
+    width: 70%;
+  }
+}
